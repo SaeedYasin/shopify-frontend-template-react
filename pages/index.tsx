@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import trophyImgUrl from "../assets/home-trophy.png";
 import mixpanel from "../lib/mixpanel";
 const ProductsCard = React.lazy(() => import("../components/ProductsCard"));
+import { useTranslation, Trans } from "react-i18next";
 
 const updateMixPanel = () => {
   mixpanel.then((mp) => {
@@ -25,6 +26,7 @@ const updateMixPanel = () => {
 };
 
 export default function HomePage() {
+  const { t } = useTranslation();
   updateMixPanel();
 
   const navigate = useNavigate();
@@ -42,8 +44,8 @@ export default function HomePage() {
   ];
 
   return (
-    <Page fullWidth>
-      <TitleBar title="App name" primaryAction={null} />
+    <Page>
+      <TitleBar title={t("HomePage.title")} primaryAction={null} />
       <Layout>
         <Layout.Section>
           <LegacyCard sectioned>
@@ -56,37 +58,46 @@ export default function HomePage() {
               <LegacyStack.Item fill>
                 <VerticalStack gap={"4"}>
                   <Text as="h2" variant="headingMd">
-                    Nice work on building a Shopify app 🎉
+                    {t("HomePage.heading")}
                   </Text>
                   <p>
-                    Your app is ready to explore! It contains everything you
-                    need to get started including the{" "}
-                    <Link url="https://polaris.shopify.com/" external>
-                      Polaris design system
-                    </Link>
-                    ,{" "}
-                    <Link url="https://shopify.dev/api/admin-graphql" external>
-                      Shopify Admin API
-                    </Link>
-                    , and{" "}
-                    <Link
-                      url="https://shopify.dev/apps/tools/app-bridge"
-                      external
-                    >
-                      App Bridge
-                    </Link>{" "}
-                    UI library and components.
+                    <Trans
+                      i18nKey="HomePage.yourAppIsReadyToExplore"
+                      components={{
+                        PolarisLink: (
+                          <Link
+                            url="https://polaris.shopify.com/"
+                            target="_blank"
+                          />
+                        ),
+                        AdminApiLink: (
+                          <Link
+                            url="https://shopify.dev/api/admin-graphql"
+                            target="_blank"
+                          />
+                        ),
+                        AppBridgeLink: (
+                          <Link
+                            url="https://shopify.dev/apps/tools/app-bridge"
+                            target="_blank"
+                          />
+                        ),
+                      }}
+                    />
                   </p>
-
+                  <p>{t("HomePage.startPopulatingYourApp")}</p>
                   <p>
-                    Learn more about building out your app in{" "}
-                    <Link
-                      url="https://shopify.dev/apps/getting-started/add-functionality"
-                      external
-                    >
-                      this Shopify tutorial
-                    </Link>{" "}
-                    📚{" "}
+                    <Trans
+                      i18nKey="HomePage.learnMore"
+                      components={{
+                        ShopifyTutorialLink: (
+                          <Link
+                            url="https://shopify.dev/apps/getting-started/add-functionality"
+                            target="_blank"
+                          />
+                        ),
+                      }}
+                    />
                   </p>
                 </VerticalStack>
               </LegacyStack.Item>
@@ -94,7 +105,7 @@ export default function HomePage() {
                 <div style={{ padding: "0 20px" }}>
                   <Image
                     source={trophyImgUrl}
-                    alt="Nice work on building a Shopify app"
+                    alt={t("HomePage.trophyAltText")}
                     width={120}
                   />
                 </div>

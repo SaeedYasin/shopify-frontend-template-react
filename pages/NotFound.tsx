@@ -1,19 +1,15 @@
 import { LegacyCard, EmptyState, Page } from "@shopify/polaris";
+import { useTranslation } from "react-i18next";
 import { notFoundImage } from "../assets";
 
 export default function NotFound() {
+  const { t } = useTranslation();
   return (
     <Page>
       <LegacyCard>
         <LegacyCard.Section>
-          <EmptyState
-            heading="There is no page at this address"
-            image={notFoundImage}
-          >
-            <p>
-              Check the URL and try again, or use the search bar to find what
-              you need.
-            </p>
+          <EmptyState heading={t("NotFound.heading")} image={notFoundImage}>
+            <p>{t("NotFound.description")}</p>
           </EmptyState>
         </LegacyCard.Section>
       </LegacyCard>

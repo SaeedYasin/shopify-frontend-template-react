@@ -1,9 +1,8 @@
-import { useCallback } from "react";
-import { AppProvider } from "@shopify/polaris";
 import { useNavigate } from "@shopify/app-bridge-react";
-import translations from "@shopify/polaris/locales/en.json";
+import { AppProvider } from "@shopify/polaris";
 import "@shopify/polaris/build/esm/styles.css";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useCallback } from "react";
+import { getPolarisTranslations } from "../utils/i18nUtils";
 
 function AppBridgeLink({
   url,
@@ -54,6 +53,8 @@ function AppBridgeLink({
  *
  */
 export function PolarisProvider({ children }: PropsWithChildren) {
+  const translations = getPolarisTranslations();
+
   return (
     <AppProvider i18n={translations} linkComponent={AppBridgeLink}>
       {children}

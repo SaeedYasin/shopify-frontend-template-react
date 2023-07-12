@@ -1,4 +1,5 @@
 import { BrowserRouter } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { NavigationMenu } from "@shopify/app-bridge-react";
 import Routes from "./Routes";
 
@@ -17,6 +18,7 @@ export default function App() {
       eager: true,
     }
   );
+  const { t } = useTranslation();
 
   return (
     <PolarisProvider>
@@ -33,7 +35,7 @@ export default function App() {
                       destination: "/settings",
                     },
                     {
-                      label: "Page name",
+                      label: t("NavigationMenu.pageName"),
                       destination: "/pagename",
                     },
                   ]}

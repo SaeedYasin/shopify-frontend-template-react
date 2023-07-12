@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { LegacyCard, Text, VerticalStack, Button } from "@shopify/polaris";
 import { Toast } from "@shopify/app-bridge-react";
+import { useTranslation } from "react-i18next";
 import { useAuthenticatedFetch } from "../hooks";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 
@@ -62,6 +63,7 @@ export default function ProductsCard() {
   };
   const { mutate } = useProductCreate(2, showToast);
   const { data: count, isLoading, error } = useProductCount();
+  const { t } = useTranslation();
 
   const toastMarkup = toast.show && (
     <Toast
@@ -73,14 +75,14 @@ export default function ProductsCard() {
   return (
     <>
       {toastMarkup}
-      <LegacyCard title="Product Counter" sectioned>
+      <LegacyCard title={t("ProductsCard.title")} sectioned>
         <VerticalStack gap={"4"}>
           <p>
             Sample products are created with a default title and price. You can
             remove them at any time.
           </p>
           <Text variant="headingMd" as="h1">
-            TOTAL PRODUCTS
+            {t("ProductsCard.totalProductsHeading")}
             <Text variant="heading2xl" as="p">
               {isLoading && ".."}
               {error && "??"}
@@ -88,7 +90,9 @@ export default function ProductsCard() {
             </Text>
           </Text>
           <Button outline loading={isLoading} onClick={mutate}>
-            Populate 2 products
+            {t("ProductsCard.populateProductsButton", {
+              count: 2,
+            })}
           </Button>
         </VerticalStack>
       </LegacyCard>
