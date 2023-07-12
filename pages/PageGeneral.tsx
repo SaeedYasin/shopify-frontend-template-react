@@ -1,5 +1,5 @@
 import {
-  AlphaStack,
+  VerticalStack,
   Image,
   Layout,
   LegacyCard,
@@ -26,12 +26,10 @@ export default function PageGeneral() {
   return (
     <Page
       fullWidth
-      breadcrumbs={[
-        {
-          content: "Back",
-          onAction: () => navigate(-1),
-        },
-      ]}
+      backAction={{
+        content: "Back",
+        onAction: () => navigate(-1),
+      }}
     >
       <Layout>
         <Layout.Section>
@@ -43,11 +41,11 @@ export default function PageGeneral() {
               alignment="center"
             >
               <LegacyStack.Item fill>
-                <AlphaStack gap={"4"}>
+                <VerticalStack gap={"4"}>
                   <Text variant="headingMd" as="h1">
                     Page General Example
                   </Text>
-                </AlphaStack>
+                </VerticalStack>
               </LegacyStack.Item>
               <LegacyStack.Item>
                 <div style={{ padding: "0 20px" }}>
@@ -70,11 +68,11 @@ export default function PageGeneral() {
               alignment="center"
             >
               <LegacyStack.Item fill>
-                <AlphaStack gap={"4"}>
+                <VerticalStack gap={"4"}>
                   <Text variant="headingMd" as="h1">
                     Secondary Section
                   </Text>
-                </AlphaStack>
+                </VerticalStack>
               </LegacyStack.Item>
             </LegacyStack>
           </LegacyCard>

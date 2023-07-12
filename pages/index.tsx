@@ -1,7 +1,7 @@
 import { TitleBar } from "@shopify/app-bridge-react";
 import {
   ActionList,
-  AlphaStack,
+  VerticalStack,
   Image,
   Layout,
   LegacyCard,
@@ -54,7 +54,7 @@ export default function HomePage() {
               alignment="center"
             >
               <LegacyStack.Item fill>
-                <AlphaStack gap={"4"}>
+                <VerticalStack gap={"4"}>
                   <Text as="h2" variant="headingMd">
                     Nice work on building a Shopify app 🎉
                   </Text>
@@ -88,7 +88,7 @@ export default function HomePage() {
                     </Link>{" "}
                     📚{" "}
                   </p>
-                </AlphaStack>
+                </VerticalStack>
               </LegacyStack.Item>
               <LegacyStack.Item>
                 <div style={{ padding: "0 20px" }}>
