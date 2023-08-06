@@ -1,6 +1,13 @@
 import { Toast, useAppBridge } from "@shopify/app-bridge-react";
 import { Redirect } from "@shopify/app-bridge/actions";
-import { Button, ButtonGroup, DataTable, LegacyCard } from "@shopify/polaris";
+import {
+  Button,
+  ButtonGroup,
+  DataTable,
+  LegacyCard,
+  LegacyStack,
+  Text,
+} from "@shopify/polaris";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import type { Subscription } from "../../@types/billing";
@@ -105,9 +112,9 @@ export function ActiveSubscriptions() {
       {toastMarkup}
       <LegacyCard title="Active Subscriptions" sectioned>
         <LegacyCard.Section>
-          <div className="flex flex-col md:flex-row items-center justify-items-center gap-4">
-            <div>Your active subscription is shown below,</div>
-            <div>
+          <LegacyStack alignment="center">
+            <Text as="p">Your active subscription is shown below,</Text>
+            <LegacyStack alignment="center">
               <ButtonGroup>
                 <Button
                   primary
@@ -124,8 +131,8 @@ export function ActiveSubscriptions() {
                   Downgrade Plan
                 </Button>
               </ButtonGroup>
-            </div>
-          </div>
+            </LegacyStack>
+          </LegacyStack>
         </LegacyCard.Section>
         <LegacyCard.Section>
           <DataTable
