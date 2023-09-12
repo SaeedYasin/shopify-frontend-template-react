@@ -1,27 +1,33 @@
-import { useState } from "react";
-import { LegacyCard, Text, VerticalStack, Button } from "@shopify/polaris";
-import { Toast } from "@shopify/app-bridge-react";
+import { useToast } from "@shopify/app-bridge-react";
+import { Button, LegacyCard, Text, VerticalStack } from "@shopify/polaris";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useAuthenticatedFetch } from "../hooks";
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 
 function useProductCount() {
   const fetch = useAuthenticatedFetch();
   return useQuery(["api", "products", "count"], async () => {
-    const { count } = await fetch("/api/products/count").then((res) =>
-      res.json()
-    );
-    return count as number;
+    const res = await fetch("/api/products/count");
+    if (!res.ok) {
+      throw new Error(await res.text());
+    }
+    const { count } = (await res.json()) as { count: number };
+    return count;
   });
 }
 
-function useProductCreate(noOfProducts = 2, showToast: (msg: string) => void) {
+function useProductCreate(noOfProducts = 2) {
   const queryClient = useQueryClient();
   const fetch = useAuthenticatedFetch();
+  const { show: showToast } = useToast();
   return useMutation(
     ["api", "product"],
     async () => {
-      await fetch("/api/products/create/" + noOfProducts);
+      const res = await fetch("/api/products/create/" + noOfProducts);
+      if (!res.ok) {
+        const error = await res.text();
+        throw new Error(error);
+      }
     },
     {
       onMutate: async () => {
@@ -56,46 +62,31 @@ function useProductCreate(noOfProducts = 2, showToast: (msg: string) => void) {
 }
 
 export default function ProductsCard() {
-  const [{ toast }, setToast] = useState({ toast: { msg: "", show: false } });
-  const showToast = (msg: string) => {
-    setToast({ toast: { msg: "", show: false } });
-    setToast({ toast: { msg, show: true } });
-  };
-  const { mutate } = useProductCreate(2, showToast);
+  const { mutate } = useProductCreate(2);
   const { data: count, isLoading, error } = useProductCount();
   const { t } = useTranslation();
 
-  const toastMarkup = toast.show && (
-    <Toast
-      content={toast.msg}
-      onDismiss={() => setToast({ toast: { msg: "", show: false } })}
-    />
-  );
-
   return (
-    <>
-      {toastMarkup}
-      <LegacyCard title={t("ProductsCard.title")} sectioned>
-        <VerticalStack gap={"4"}>
-          <p>
-            Sample products are created with a default title and price. You can
-            remove them at any time.
-          </p>
-          <Text variant="headingMd" as="h1">
-            {t("ProductsCard.totalProductsHeading")}
-            <Text variant="heading2xl" as="p">
-              {isLoading && ".."}
-              {error && "??"}
-              {!isLoading && count}
-            </Text>
+    <LegacyCard title={t("ProductsCard.title")} sectioned>
+      <VerticalStack gap={"4"}>
+        <p>
+          Sample products are created with a default title and price. You can
+          remove them at any time.
+        </p>
+        <Text variant="headingMd" as="h1">
+          {t("ProductsCard.totalProductsHeading")}
+          <Text variant="heading2xl" as="p">
+            {isLoading && ".."}
+            {error && "??"}
+            {!isLoading && count}
           </Text>
-          <Button outline loading={isLoading} onClick={mutate}>
-            {t("ProductsCard.populateProductsButton", {
-              count: 2,
-            })}
-          </Button>
-        </VerticalStack>
-      </LegacyCard>
-    </>
+        </Text>
+        <Button outline loading={isLoading} onClick={mutate}>
+          {t("ProductsCard.populateProductsButton", {
+            count: 2,
+          })}
+        </Button>
+      </VerticalStack>
+    </LegacyCard>
   );
 }

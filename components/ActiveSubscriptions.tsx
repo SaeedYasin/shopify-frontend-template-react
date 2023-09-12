@@ -1,4 +1,4 @@
-import { Toast, useAppBridge } from "@shopify/app-bridge-react";
+import { useAppBridge, useToast } from "@shopify/app-bridge-react";
 import { Redirect } from "@shopify/app-bridge/actions";
 import {
   Button,
@@ -9,7 +9,6 @@ import {
   Text,
 } from "@shopify/polaris";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
 import type { Subscription } from "../../@types/billing";
 import { useAuthenticatedFetch } from "../hooks";
 
@@ -38,23 +37,31 @@ function generateRows(subscriptionData: Subscription) {
 function useGetSubscription() {
   const fetch = useAuthenticatedFetch();
   return useQuery(["api", "subscription"], async () => {
-    const data: Subscription = await fetch("/api/billing").then(
-      (res: Response) => res.json()
-    );
+    const res = await fetch("/api/billing");
+    if (!res.ok) {
+      throw new Error(await res.text());
+    }
+    const data = (await res.json()) as Subscription;
     return generateRows(data);
   });
 }
 
-function useDoSubscribe(showToast: (msg: string) => void) {
+function useDoSubscribe() {
   const fetch = useAuthenticatedFetch();
+  const { show: showToast } = useToast();
   const app = useAppBridge();
   const redirect = Redirect.create(app);
   return useMutation(
     ["api", "billing"],
     async () => {
-      const { url }: { url: string } = await fetch("/api/billing", {
+      const res = await fetch("/api/billing", {
         method: "POST",
-      }).then((res: Response) => res.json());
+      });
+      if (!res.ok) {
+        const error = await res.text();
+        return { success: false, error };
+      }
+      const { url } = (await res.json()) as { url: string };
       redirect.dispatch(Redirect.Action.REMOTE, url);
     },
     {
@@ -65,23 +72,33 @@ function useDoSubscribe(showToast: (msg: string) => void) {
   );
 }
 
-function useDoUnsubscribe(showToast: (msg: string) => void) {
+function useDoUnsubscribe() {
   const queryClient = useQueryClient();
   const fetch = useAuthenticatedFetch();
+  const { show: showToast } = useToast();
   return useMutation(
     ["api", "billing"],
     async () => {
-      await fetch("/api/billing", {
+      const res = await fetch("/api/billing", {
         method: "DELETE",
-      }).then((res: Response) => res.json());
+      });
+      if (!res.ok) {
+        const error = await res.text();
+        return { success: false, error };
+      }
+      return { success: true };
     },
     {
       onMutate: async () => {
         showToast("Updating...");
       },
-      onSuccess: async () => {
-        await queryClient.invalidateQueries(["api", "subscription"]);
-        showToast("Billing Plan Updated!");
+      onSuccess: async ({ success }: { success: boolean }) => {
+        if (success) {
+          await queryClient.invalidateQueries(["api", "subscription"]);
+          showToast("Billing Plan Updated!");
+        } else {
+          showToast("Error updating billing plan!");
+        }
       },
       onError: () => {
         showToast("Error updating billing plan!");
@@ -92,24 +109,11 @@ function useDoUnsubscribe(showToast: (msg: string) => void) {
 
 export function ActiveSubscriptions() {
   const subscription = useGetSubscription();
-  const [{ toast }, setToast] = useState({ toast: { msg: "", show: false } });
-  const showToast = (msg: string) => {
-    setToast({ toast: { msg: "", show: false } });
-    setToast({ toast: { msg, show: true } });
-  };
-  const { mutate: unsubscribe } = useDoUnsubscribe(showToast);
-  const { mutate: subscribe } = useDoSubscribe(showToast);
-
-  const toastMarkup = toast.show && (
-    <Toast
-      content={toast.msg}
-      onDismiss={() => setToast({ toast: { msg: "", show: false } })}
-    />
-  );
+  const { mutate: unsubscribe } = useDoUnsubscribe();
+  const { mutate: subscribe } = useDoSubscribe();
 
   return (
     <>
-      {toastMarkup}
       <LegacyCard title="Active Subscriptions" sectioned>
         <LegacyCard.Section>
           <LegacyStack alignment="center">

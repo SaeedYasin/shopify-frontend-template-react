@@ -57,9 +57,11 @@ export const ShopProvider = (props: PropsWithChildren) => {
 
   useEffect(() => {
     (async () => {
-      const shop: ShopObj = await fetch("/api/shop/name").then((res) =>
-        res.json()
-      );
+      const res = await fetch("/api/shop/name");
+      if (!res.ok) {
+        throw new Error(await res.text());
+      }
+      const shop = (await res.json()) as ShopObj;
       updateShop(shop);
       mixpanel.then((mp) => {
         mp.identify(shop.shop);
