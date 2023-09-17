@@ -23,11 +23,14 @@ function useProductCreate(noOfProducts = 2) {
   return useMutation(
     ["api", "product"],
     async () => {
-      const res = await fetch("/api/products/create/" + noOfProducts);
+      const res = await fetch("/api/products/create/" + noOfProducts, {
+        method: "POST",
+      });
       if (!res.ok) {
         const error = await res.text();
-        throw new Error(error);
+        return { success: false, error };
       }
+      return { success: true };
     },
     {
       onMutate: async () => {
@@ -49,13 +52,18 @@ function useProductCreate(noOfProducts = 2) {
           ["api", "products", "count"],
           context.previousCount
         );
+        showToast("Error creating products", { isError: true });
       },
       onSettled: () => {
         queryClient.invalidateQueries(["api", "products", "count"]);
       },
-      onSuccess: async () => {
-        await queryClient.invalidateQueries(["api", "products", "count"]);
-        showToast("2 products created!");
+      onSuccess: async ({ success }: { success: boolean }) => {
+        if (success) {
+          await queryClient.invalidateQueries(["api", "products", "count"]);
+          showToast("2 products created!");
+        } else {
+          showToast("Error creating products!", { isError: true });
+        }
       },
     }
   );
@@ -63,8 +71,12 @@ function useProductCreate(noOfProducts = 2) {
 
 export default function ProductsCard() {
   const { mutate } = useProductCreate(2);
-  const { data: count, isLoading, error } = useProductCount();
+  const { data: count, isLoading, isError, error } = useProductCount();
   const { t } = useTranslation();
+
+  if (isError) {
+    throw new Error(`Default:${error}`);
+  }
 
   return (
     <LegacyCard title={t("ProductsCard.title")} sectioned>
@@ -77,7 +89,6 @@ export default function ProductsCard() {
           {t("ProductsCard.totalProductsHeading")}
           <Text variant="heading2xl" as="p">
             {isLoading && ".."}
-            {error && "??"}
             {!isLoading && count}
           </Text>
         </Text>

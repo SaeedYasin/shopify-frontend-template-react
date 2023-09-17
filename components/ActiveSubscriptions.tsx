@@ -63,6 +63,7 @@ function useDoSubscribe() {
       }
       const { url } = (await res.json()) as { url: string };
       redirect.dispatch(Redirect.Action.REMOTE, url);
+      return { success: true };
     },
     {
       onError: () => {
@@ -108,50 +109,44 @@ function useDoUnsubscribe() {
 }
 
 export function ActiveSubscriptions() {
-  const subscription = useGetSubscription();
+  const { data, isLoading, isError, error } = useGetSubscription();
   const { mutate: unsubscribe } = useDoUnsubscribe();
   const { mutate: subscribe } = useDoSubscribe();
 
+  if (isError) {
+    throw new Error(`Default:${error}`);
+  }
+
   return (
-    <>
-      <LegacyCard title="Active Subscriptions" sectioned>
-        <LegacyCard.Section>
+    <LegacyCard title="Active Subscriptions" sectioned>
+      <LegacyCard.Section>
+        <LegacyStack alignment="center">
+          <Text as="p">Your active subscription is shown below,</Text>
           <LegacyStack alignment="center">
-            <Text as="p">Your active subscription is shown below,</Text>
-            <LegacyStack alignment="center">
-              <ButtonGroup>
-                <Button
-                  primary
-                  loading={subscription.isLoading}
-                  onClick={subscribe}
-                >
-                  Upgrade Plan
-                </Button>
-                <Button
-                  outline
-                  loading={subscription.isLoading}
-                  onClick={unsubscribe}
-                >
-                  Downgrade Plan
-                </Button>
-              </ButtonGroup>
-            </LegacyStack>
+            <ButtonGroup>
+              <Button primary loading={isLoading} onClick={subscribe}>
+                Upgrade Plan
+              </Button>
+              <Button outline loading={isLoading} onClick={unsubscribe}>
+                Downgrade Plan
+              </Button>
+            </ButtonGroup>
           </LegacyStack>
-        </LegacyCard.Section>
-        <LegacyCard.Section>
-          <DataTable
-            columnContentTypes={["text", "text", "text", "text", "text"]}
-            headings={["Plan Name", "Status", "Test", "Trial Days", "Amount"]}
-            rows={
-              subscription.isLoading
-                ? [["Loading..."]]
-                : subscription.error
-                ? [["Error", `${subscription.error}`]]
-                : subscription.data
-            }
-          />
-        </LegacyCard.Section>
-      </LegacyCard>
-    </>
+        </LegacyStack>
+      </LegacyCard.Section>
+      <LegacyCard.Section>
+        <DataTable
+          columnContentTypes={["text", "text", "text", "text", "text"]}
+          headings={["Plan Name", "Status", "Test", "Trial Days", "Amount"]}
+          rows={
+            isLoading
+              ? [["Loading..."]]
+              : error
+              ? [["Error", `${error}`]]
+              : data
+          }
+        />
+      </LegacyCard.Section>
+    </LegacyCard>
   );
 }

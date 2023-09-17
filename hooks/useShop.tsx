@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
+  PropsWithChildren,
   createContext,
   useContext,
   useEffect,
   useMemo,
   useReducer,
 } from "react";
-import { PropsWithChildren } from "react";
 import { useAuthenticatedFetch } from "../hooks";
+import Bugsnag from "../lib/bugsnag.js";
 import mixpanel from "../lib/mixpanel";
 
 type ShopObj = { shop: string };
@@ -66,6 +67,10 @@ export const ShopProvider = (props: PropsWithChildren) => {
       mixpanel.then((mp) => {
         mp.identify(shop.shop);
         mp.register({ shop: shop.shop });
+      });
+      Bugsnag.then((bugsnag) => {
+        bugsnag.setUser(shop.shop, "", shop.shop);
+        bugsnag.addMetadata("shop", shop);
       });
     })();
   }, []);
