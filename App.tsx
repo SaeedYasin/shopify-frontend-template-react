@@ -32,6 +32,7 @@ export default function App() {
             onError={(error, info) => {
               Bugsnag.then((bugsnag) => {
                 bugsnag.notify(error, (event) => {
+                  event.groupingHash = error.message;
                   event.addMetadata("Info", info);
                   event.unhandled = true;
                   event.severity = "error";

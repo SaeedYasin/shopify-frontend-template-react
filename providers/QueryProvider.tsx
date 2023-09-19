@@ -10,8 +10,10 @@ import Bugsnag from "../lib/bugsnag";
 const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: (error, data) => {
+      const errorMsg = error as string;
       Bugsnag.then((bugsnag) => {
-        bugsnag.notify(error as string, (event) => {
+        bugsnag.notify(errorMsg, (event) => {
+          event.groupingHash = errorMsg;
           event.addMetadata("Query", data);
         });
       });
@@ -21,7 +23,9 @@ const queryClient = new QueryClient({
     onSuccess: (result: { success: boolean; error: string }, data) => {
       if (!result || !result.success) {
         Bugsnag.then((bugsnag) => {
-          bugsnag.notify(result?.error || "Unknown error", (event) => {
+          const errorMsg = result?.error || "Unknown error";
+          bugsnag.notify(errorMsg, (event) => {
+            event.groupingHash = errorMsg;
             event.addMetadata("Mutation", data);
             event.addMetadata("Result", result);
             event.unhandled = true;
@@ -32,7 +36,9 @@ const queryClient = new QueryClient({
     },
     onError: (error, data) => {
       Bugsnag.then((bugsnag) => {
-        bugsnag.notify(error as string, (event) => {
+        const errorMsg = error as string;
+        bugsnag.notify(errorMsg, (event) => {
+          event.groupingHash = errorMsg;
           event.addMetadata("Mutation", data);
           event.unhandled = true;
           event.severity = "error";
