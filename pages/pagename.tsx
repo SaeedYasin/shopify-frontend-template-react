@@ -1,11 +1,5 @@
-import {
-  LegacyCard,
-  Page,
-  Layout,
-  VerticalStack,
-  Text,
-} from "@shopify/polaris";
 import { TitleBar } from "@shopify/app-bridge-react";
+import { BlockStack, Card, Layout, Page, Text } from "@shopify/polaris";
 import { useTranslation } from "react-i18next";
 
 export default function PageName() {
@@ -27,32 +21,34 @@ export default function PageName() {
       />
       <Layout>
         <Layout.Section>
-          <LegacyCard sectioned>
-            <Text variant="headingMd" as="h2">
-              {t("PageName.heading")}
-            </Text>
-            <VerticalStack>
-              <p>{t("PageName.body")}</p>
-            </VerticalStack>
-          </LegacyCard>
-          <LegacyCard sectioned>
-            <Text variant="headingMd" as="h2">
-              {t("PageName.heading")}
-            </Text>
-            <VerticalStack>
-              <p>{t("PageName.body")}</p>
-            </VerticalStack>
-          </LegacyCard>
+          <BlockStack gap={"200"}>
+            <Card>
+              <Text variant="headingMd" as="h2">
+                {t("PageName.heading")}
+              </Text>
+              <Text variant="bodyMd" as="p">
+                {t("PageName.body")}
+              </Text>
+            </Card>
+            <Card>
+              <Text variant="headingMd" as="h2">
+                {t("PageName.heading")}
+              </Text>
+              <Text variant="bodyMd" as="p">
+                {t("PageName.body")}
+              </Text>
+            </Card>
+          </BlockStack>
         </Layout.Section>
-        <Layout.Section secondary>
-          <LegacyCard sectioned>
+        <Layout.Section variant="oneThird">
+          <Card>
             <Text variant="headingMd" as="h2">
               {t("PageName.heading")}
             </Text>
-            <VerticalStack>
-              <p>{t("PageName.body")}</p>
-            </VerticalStack>
-          </LegacyCard>
+            <Text variant="bodyMd" as="p">
+              {t("PageName.body")}
+            </Text>
+          </Card>
         </Layout.Section>
       </Layout>
     </Page>

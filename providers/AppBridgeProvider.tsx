@@ -78,7 +78,7 @@ export function AppBridgeProvider({ children }: PropsWithChildren) {
         <Layout>
           <Layout.Section>
             <div style={{ marginTop: "100px" }}>
-              <Banner {...bannerProps} status="critical" />
+              <Banner {...bannerProps} tone="critical" />
             </div>
           </Layout.Section>
         </Layout>

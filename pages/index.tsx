@@ -1,21 +1,21 @@
 import { TitleBar } from "@shopify/app-bridge-react";
 import {
   ActionList,
-  VerticalStack,
+  BlockStack,
+  Card,
   Image,
+  InlineStack,
   Layout,
-  LegacyCard,
-  LegacyStack,
   Link,
   Page,
   Text,
 } from "@shopify/polaris";
 import React, { Suspense } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import trophyImgUrl from "../assets/home-trophy.png";
 import mixpanel from "../lib/mixpanel";
 const ProductsCard = React.lazy(() => import("../components/ProductsCard"));
-import { useTranslation, Trans } from "react-i18next";
 
 const updateMixPanel = () => {
   mixpanel.then((mp) => {
@@ -48,80 +48,71 @@ export default function HomePage() {
       <TitleBar title={t("HomePage.title")} primaryAction={null} />
       <Layout>
         <Layout.Section>
-          <LegacyCard sectioned>
-            <LegacyStack
-              wrap={false}
-              spacing="extraTight"
-              distribution="trailing"
-              alignment="center"
-            >
-              <LegacyStack.Item fill>
-                <VerticalStack gap={"4"}>
-                  <Text as="h2" variant="headingMd">
-                    {t("HomePage.heading")}
-                  </Text>
-                  <p>
-                    <Trans
-                      i18nKey="HomePage.yourAppIsReadyToExplore"
-                      components={{
-                        PolarisLink: (
-                          <Link
-                            url="https://polaris.shopify.com/"
-                            target="_blank"
-                          />
-                        ),
-                        AdminApiLink: (
-                          <Link
-                            url="https://shopify.dev/api/admin-graphql"
-                            target="_blank"
-                          />
-                        ),
-                        AppBridgeLink: (
-                          <Link
-                            url="https://shopify.dev/apps/tools/app-bridge"
-                            target="_blank"
-                          />
-                        ),
-                      }}
-                    />
-                  </p>
-                  <p>{t("HomePage.startPopulatingYourApp")}</p>
-                  <p>
-                    <Trans
-                      i18nKey="HomePage.learnMore"
-                      components={{
-                        ShopifyTutorialLink: (
-                          <Link
-                            url="https://shopify.dev/apps/getting-started/add-functionality"
-                            target="_blank"
-                          />
-                        ),
-                      }}
-                    />
-                  </p>
-                </VerticalStack>
-              </LegacyStack.Item>
-              <LegacyStack.Item>
-                <div style={{ padding: "0 20px" }}>
-                  <Image
-                    source={trophyImgUrl}
-                    alt={t("HomePage.trophyAltText")}
-                    width={120}
+          <Card>
+            <InlineStack gap={"400"} align="space-between" wrap={false}>
+              <BlockStack gap={"400"}>
+                <Text as="h2" variant="headingMd">
+                  {t("HomePage.heading")}
+                </Text>
+                <p>
+                  <Trans
+                    i18nKey="HomePage.yourAppIsReadyToExplore"
+                    components={{
+                      PolarisLink: (
+                        <Link
+                          url="https://polaris.shopify.com/"
+                          target="_blank"
+                        />
+                      ),
+                      AdminApiLink: (
+                        <Link
+                          url="https://shopify.dev/api/admin-graphql"
+                          target="_blank"
+                        />
+                      ),
+                      AppBridgeLink: (
+                        <Link
+                          url="https://shopify.dev/apps/tools/app-bridge"
+                          target="_blank"
+                        />
+                      ),
+                    }}
                   />
-                </div>
-              </LegacyStack.Item>
-            </LegacyStack>
-          </LegacyCard>
+                </p>
+                <p>{t("HomePage.startPopulatingYourApp")}</p>
+                <p>
+                  <Trans
+                    i18nKey="HomePage.learnMore"
+                    components={{
+                      ShopifyTutorialLink: (
+                        <Link
+                          url="https://shopify.dev/apps/getting-started/add-functionality"
+                          target="_blank"
+                        />
+                      ),
+                    }}
+                  />
+                </p>
+              </BlockStack>
+              <div style={{ padding: "0 20px" }}>
+                <Image
+                  source={trophyImgUrl}
+                  alt={t("HomePage.trophyAltText")}
+                  width={120}
+                />
+              </div>
+            </InlineStack>
+          </Card>
         </Layout.Section>
-        <Layout.Section secondary>
+        <Layout.Section variant="oneThird">
           <Suspense fallback={<div>Loading...</div>}>
             <ProductsCard />
           </Suspense>
         </Layout.Section>
-        <Layout.Section fullWidth>
-          <LegacyCard>
+        <Layout.Section variant="fullWidth">
+          <Card padding={"0"}>
             <ActionList actionRole="menuitem" items={pagesLinks} />
-          </LegacyCard>
+          </Card>
         </Layout.Section>
       </Layout>
     </Page>

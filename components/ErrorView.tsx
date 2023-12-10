@@ -1,4 +1,4 @@
-import { Banner, Layout, LegacyStack, Page } from "@shopify/polaris";
+import { Banner, BlockStack, Layout, Page } from "@shopify/polaris";
 import { FallbackProps } from "react-error-boundary";
 
 export default function ErrorBoundaryView({
@@ -24,14 +24,14 @@ export default function ErrorBoundaryView({
         <Layout.Section>
           <div style={{ marginTop: "100px" }}>
             <Banner
-              status="critical"
+              tone="critical"
               title="Something went wrong!"
               action={{
                 content: "Reload",
                 onAction: () => resetErrorBoundary(),
               }}
             >
-              <LegacyStack vertical>
+              <BlockStack gap={"400"}>
                 <p style={{ color: "var(--p-color-text)" }}>{line1}</p>
                 <p style={{ color: "var(--p-color-text-critical)" }}>
                   {errorMsg}
@@ -40,7 +40,7 @@ export default function ErrorBoundaryView({
                 {line3 && (
                   <p style={{ color: "var(--p-color-text)" }}>{line3}</p>
                 )}
-              </LegacyStack>
+              </BlockStack>
             </Banner>
           </div>
         </Layout.Section>

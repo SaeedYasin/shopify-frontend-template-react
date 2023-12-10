@@ -1,11 +1,12 @@
 import { useAppBridge, useToast } from "@shopify/app-bridge-react";
 import { Redirect } from "@shopify/app-bridge/actions";
 import {
+  BlockStack,
   Button,
   ButtonGroup,
+  Card,
   DataTable,
-  LegacyCard,
-  LegacyStack,
+  InlineStack,
   Text,
 } from "@shopify/polaris";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -118,23 +119,24 @@ export function ActiveSubscriptions() {
   }
 
   return (
-    <LegacyCard title="Active Subscriptions" sectioned>
-      <LegacyCard.Section>
-        <LegacyStack alignment="center">
+    <Card>
+      <BlockStack gap={"400"}>
+        <Text variant="headingMd" as="h1">
+          Active Subscriptions
+        </Text>
+        <InlineStack gap={"400"} blockAlign="center">
           <Text as="p">Your active subscription is shown below,</Text>
-          <LegacyStack alignment="center">
+          <InlineStack gap={"200"} blockAlign="center">
             <ButtonGroup>
-              <Button primary loading={isLoading} onClick={subscribe}>
+              <Button loading={isLoading} onClick={subscribe} variant="primary">
                 Upgrade Plan
               </Button>
-              <Button outline loading={isLoading} onClick={unsubscribe}>
+              <Button loading={isLoading} onClick={unsubscribe}>
                 Downgrade Plan
               </Button>
             </ButtonGroup>
-          </LegacyStack>
-        </LegacyStack>
-      </LegacyCard.Section>
-      <LegacyCard.Section>
+          </InlineStack>
+        </InlineStack>
         <DataTable
           columnContentTypes={["text", "text", "text", "text", "text"]}
           headings={["Plan Name", "Status", "Test", "Trial Days", "Amount"]}
@@ -142,11 +144,11 @@ export function ActiveSubscriptions() {
             isLoading
               ? [["Loading..."]]
               : error
-              ? [["Error", `${error}`]]
-              : data
+                ? [["Error", `${error}`]]
+                : data
           }
         />
-      </LegacyCard.Section>
-    </LegacyCard>
+      </BlockStack>
+    </Card>
   );
 }

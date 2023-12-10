@@ -1,12 +1,4 @@
-import {
-  VerticalStack,
-  Image,
-  Layout,
-  LegacyCard,
-  LegacyStack,
-  Page,
-  Text,
-} from "@shopify/polaris";
+import { Card, Image, InlineStack, Layout, Page, Text } from "@shopify/polaris";
 import { useNavigate } from "react-router";
 import trophyImgUrl from "../assets/home-trophy.png";
 import mixpanel from "../lib/mixpanel";
@@ -26,6 +18,7 @@ export default function PageIndex() {
 
   return (
     <Page
+      title="Page Index"
       fullWidth
       backAction={{
         content: "Back",
@@ -34,49 +27,27 @@ export default function PageIndex() {
     >
       <Layout>
         <Layout.Section>
-          <LegacyCard sectioned>
-            <LegacyStack
-              wrap={false}
-              spacing="extraTight"
-              distribution="trailing"
-              alignment="center"
-            >
-              <LegacyStack.Item fill>
-                <VerticalStack gap={"4"}>
-                  <Text variant="headingMd" as="h1">
-                    Page Index Example
-                  </Text>
-                </VerticalStack>
-              </LegacyStack.Item>
-              <LegacyStack.Item>
-                <div style={{ padding: "0 20px" }}>
-                  <Image
-                    source={trophyImgUrl}
-                    alt="Nice work on building a Shopify app"
-                    width={120}
-                  />
-                </div>
-              </LegacyStack.Item>
-            </LegacyStack>
-          </LegacyCard>
+          <Card>
+            <InlineStack gap={"200"} align="space-between" blockAlign="center">
+              <Text variant="headingMd" as="h1">
+                Page Index Example
+              </Text>
+              <div style={{ padding: "0 20px" }}>
+                <Image
+                  source={trophyImgUrl}
+                  alt="Nice work on building a Shopify app"
+                  width={120}
+                />
+              </div>
+            </InlineStack>
+          </Card>
         </Layout.Section>
-        <Layout.Section secondary>
-          <LegacyCard sectioned>
-            <LegacyStack
-              wrap={false}
-              spacing="extraTight"
-              distribution="trailing"
-              alignment="center"
-            >
-              <LegacyStack.Item fill>
-                <VerticalStack gap={"4"}>
-                  <Text variant="headingMd" as="h1">
-                    Secondary Section
-                  </Text>
-                </VerticalStack>
-              </LegacyStack.Item>
-            </LegacyStack>
-          </LegacyCard>
+        <Layout.Section variant="oneThird">
+          <Card>
+            <Text variant="headingMd" as="h2">
+              Secondary Section
+            </Text>
+          </Card>
         </Layout.Section>
       </Layout>
     </Page>
