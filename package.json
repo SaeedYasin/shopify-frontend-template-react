@@ -6,6 +6,7 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite",
+    "upload": "node upload_src_maps.js",
     "test": "vitest --reporter=verbose",
     "coverage": "vitest run --coverage",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
